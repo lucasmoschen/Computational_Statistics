@@ -61,9 +61,9 @@ Consider the Euclidean distance between $p$  and $q$, $||p-q|| = \sqrt{(p_x-q_x)
 
  \begin{proof}[Solution]
     We want to calculate $\ev[|x_1 - x_2|]$ such that $x_1, x_2
-    \overset{iid}{\sim} \unif(0,s)$. An extensive way to solve this problem is
-    to introduce the random variable $Y = x_1 - x_2$ and derive its
-    distribution and after its absolute mean. Let
+    \overset{iid}{\sim} \unif(0,s)$. A long and default way to solve this problem is
+    to introduce the random variable $Y = x_1 - x_2$, derive its density,
+    and its absolute mean from the density. Let
     \begin{equation*}
         F_Y(y) = \pr(Y \le y) = \pr(x_1 \le y + x_2).
     \end{equation*}
@@ -115,18 +115,17 @@ Consider the Euclidean distance between $p$  and $q$, $||p-q|| = \sqrt{(p_x-q_x)
     $$
     \pr(|x_1 - x_2| > t) = \pr(x_1 > t + x_2) + \pr(x_2 > t + x_1),
     $$
-    since they are disjoint events, since $t \ge 0$. Note that the 
-    first region is delimited by the straight line $x_1 = t + x_2$, $x_1 = s$,
+    since they are disjoint events for $t \ge 0$. Note that the 
+    first region is delimited by the straight lines $x_1 = t + x_2$, $x_1 = s$,
     and $x_2 = 0$, what gives a triangle with points $(t,0), (s, 0), $ and
     $(s,s-t)$
-    with area $(s-t)^2/2$. The second region is delimited by the straight line
+    with area $(s-t)^2/2$. The second region is delimited by the straight lines
     $x_2 = t + x_1$, $x_2 = s$, and $x_1 = 0$, what gives the triangle 
-    $(0,t). (0,s)$ and $(s-t,s)$, with area $(s-t)^2/2$. We conclude that
+    $(0,t), (0,s)$ and $(s-t,s)$, with area $(s-t)^2/2$. We conclude that
     $$
     \pr(|x_1 - x_2| > t) = \frac{(s-t)^2}{s^2} \text{ if } t \in [0,s], 
     $$
-    $0$, if $t \ge s$ and $1$ if $t \le 0$. 
-    This implies that 
+    using the fact that the density of $(x_1, x_2)$ is $s^{-2}$. This implies that 
     $$
     \ev[|x_1 - x_2]] = \int_0^{+\infty} \frac{(s-t)^2}{s^2} 1_{\{t \le s\}} \, dt
     = -\frac{(s-t)^3}{3s^2}\bigg|_{0}^s = \frac{s}{3},
@@ -136,20 +135,170 @@ Consider the Euclidean distance between $p$  and $q$, $||p-q|| = \sqrt{(p_x-q_x)
 
  \item Show that Problem A is equivalent to computing
  \begin{equation*}
-    I = \frac{1}{\pi^2 R^4}\int_{0}^{R}\int_{0}^{R}\int_{0}^{2\pi}\int_{0}^{2\pi}\sqrt{r_1^2 + r_2^2 - 2r_1r_2\cos\phi(\theta_1, \theta_2)}r_1r_2\,d\theta_1\,d\theta_2\,dr_1\,dr_2,
+    \frac{1}{\pi^2 R^4}\int_{0}^{R}\int_{0}^{R}\int_{0}^{2\pi}\int_{0}^{2\pi}\sqrt{r_1^2 + r_2^2 - 2r_1r_2\cos\phi(\theta_1, \theta_2)}r_1r_2\,d\theta_1\,d\theta_2\,dr_1\,dr_2,
    \end{equation*}
    where $\phi(\theta_1, \theta_2)$ is the central angle between $r_1$ and $r_2$.
- 
- \textit{Hint:} Draw a picture.
- \item Compute $I$ in closed-form.
 
- \textit{Hint:} Look up \textit{Crofton's mean value theorem} or \textit{Crofton's formula}. 
+   \begin{proof}[Solution]
+       Let $p = (p_x, p_y)$ e $q = (q_x, q_y)$ points in the disc of radius $R$.  We are interested
+       in the quantity
+       $$\ev\left[\sqrt{(p_x - q_x)^2 + (p_y - q_y)^2}\right].$$ Transforming
+       to polar coordinates, 
+       $$
+       p_x = r_1\cos(\theta_1), p_y = r_1\sin(\theta_1), q_x = r_2\cos(\theta_2), q_y = r_2\sin(\theta_2).
+       $$
+       And we have the following relation. 
+        \begin{equation*}
+            \begin{split}
+                (p_x - q_x)^2 + (p_y - q_y)^2 &= r_1^2\cos(\theta_1)^2 + r_2^2\cos(\theta_1) - 2r_1r_2\cos(\theta_1)\cos(\theta_2) \\ 
+                &+ r_1^2\sin(\theta_1)^2 + r_2^2\sin(\theta_1) - 2r_1r_2\sin(\theta_1)\cos(\theta_2) \\ 
+                &= r_1^2 + r_2^2 -2r_1r_2\cos(\theta_1 - \theta_2),
+            \end{split}
+        \end{equation*}
+        using the appropriate trigonometric relations. Let $p = (p_x, p_y)$ e $q = (q_x, q_y)$ pontos aleatórios com
+        distribuição uniforme no disco de raio $R$. Consider a system of
+        coordinates in which the origin is the center of the disc. We know that the density
+        of the distribution of $p$ with respect to the Lebesgue measure is 
+        $$
+        f(p) = \frac{1}{\pi R^2}1_{\{||p|| \le R\}}.
+        $$
+        The same for $q$. Now we want to transform this distribution to polar
+        coordinates, in which $\theta_1 \in [0,2\pi]$ and $r_1 \in [0,R]$. The
+        Jacobian of the inverse transformation is given by 
+        $$
+        \begin{bmatrix}
+            \cos(\theta_1) & -r_1\sin(\theta_1) \\
+            \sin(\theta_1) & r_1\cos(\theta_1),
+        \end{bmatrix}
+        $$
+        in which the absolute value of the determinant is $r_1$. By the Change of Variables in probability density function, 
+        $$
+        g_1(r_1, \cos(\theta_1)) = \frac{1}{\pi R^2}r_1. 
+        $$
+        Notice that the same happens with $(r_2, \cos(\theta_2))$ with 
+        $$
+        g_2(r_2, \cos(\theta_2)) = \frac{1}{\pi R^2}r_2. 
+        $$
+        By the Law of the unconscious statistician and the transformations
+        made above, $\ev\left[\sqrt{(p_x - q_x)^2 + (p_y - q_y)^2}\right] = $
+        $$
+        \int_{A_1} \int_{A_2} \sqrt{r_1^2 + r_2^2 -2r_1r_2\cos(\theta_1 - \theta_2)}g_1(r_1, \theta_1)g_2(r_2, \theta_2) \, dA_2 \, dA_1, 
+        $$
+        such that $A_i = [0,R] \times [0,2\pi]$, for $i=1,2$. Given that the
+        integrand is non negative, by Tonelli's
+        Theorem \cite[]{rosenthal2006first}, the integral is 
+        $$
+        \frac{1}{\pi^2 R^4}\int_{0}^{R}\int_{0}^{R}\int_{0}^{2\pi}\int_{0}^{2\pi}\sqrt{r_1^2 + r_2^2 - 2r_1r_2\cos(\theta_1 -\theta_2)}r_1r_2\,d\theta_1\,d\theta_2\,dr_1\,dr_2.
+        $$
+   \end{proof}
+
+ \item Compute $I$ in closed-form.
+ 
+ \begin{proof}[Solution]
+    Following the hint, we shall use the Crofton's mean value theorem.
+    However, instead of only using it, we will derive it from the beginning
+    for this particular case to gain intuition. Let $I(R)$ be the integral
+    above as a function of $R$. Consider the mapping $x \mapsto Rx$ from the
+    unit circle to the $R$-circle. It is a linear function, so it is
+    bijective. Besides that, 
+    $$
+    ||Rx - Ry|| = R||x-y||, 
+    $$
+    for all $x,y$ in the unit circle. This implies that 
+    $$I(R) = RI(1) \text{ and } I'(R) = I(1).$$ 
+    Let $\epsilon > 0$ and define $A^{\circ}$ the region delimited by the circle
+    of radius $R - \epsilon$, $A$ de region delimited by the circle of radius
+    $R$, and $\partial A = A / A^{\circ}$. By the Law of Total Expectation, 
+    \begin{equation}
+        \label{eq:law-total-expectation}
+        \begin{split}
+            I(R) = I(R - \epsilon)\pr(p,q \in A^{\circ}) &+ 2J(A^{\circ}, \partial A)\pr(p \in A^{\circ}, q \in \partial A) \\ 
+            &+ K(\partial A)\pr(p, q \in \partial A),
+        \end{split}
+    \end{equation}
+    such that $J(A^{\circ}, \partial A)$ is the expected distance between a
+    point in the inner circle and the other in the outer circle, and
+    $K(\partial A)$ the expected distance between points in the outer circle.
+    We will take $\epsilon$ infinitely small afterwards. For that, note the
+    following relations, 
+    \begin{align*}
+        \pr(p,q \in A^{\circ}) &= \left(\frac{\pi(R-\epsilon)^2}{\pi R^2}\right)^2 \\
+        &= \frac{(R-\epsilon)^4}{R^4} = \sum_{k=0}^4 \binom{4}{k} (-1)^k R^{-k}\epsilon^{k} \\ 
+        &= 1 - \frac{4\epsilon}{R} + o(\epsilon),  
+    \end{align*}
+    in which $o(\cdot)$ is the little o-notation, 
+    \begin{align*}
+        \pr(p \in A^{\circ}, q \in \partial A) &= \frac{(R-\epsilon)^2}{R^2}\left(1 - \frac{(R-\epsilon)^2}{R^2}\right) \\
+        &= \frac{(R^2 -2R\epsilon + \epsilon^2)(2R\epsilon - \epsilon^2)}{R^4} \\ 
+        &= \frac{2\epsilon}{R} + o(\epsilon),
+    \end{align*}
+    and 
+    \begin{align*}
+        \pr(p,q \in \partial A) &= \left(1 - \frac{(R-\epsilon)^2}{R^2}\right)^2 \\
+        &= \frac{(2R\epsilon - \epsilon^2)^2}{R^4} \\ 
+        &=o(\epsilon).
+    \end{align*}
+    The formula given by \eqref{eq:law-total-expectation} can be rewritten as 
+    \begin{equation*}
+        I(R) = I(R - \epsilon)\left(1 - \frac{4\epsilon}{R} + o(\epsilon)\right) + J(A^{\circ}, \partial A)\left(\frac{4\epsilon}{R} + o(\epsilon)\right) + K(\partial A)o(\epsilon),
+    \end{equation*} 
+    then 
+    $$
+    I(1) = I'(R) = \lim_{\epsilon \to 0} \frac{I(R) - I(R-\epsilon)}{\epsilon} = -\frac{4}{R}I(R) + \frac{4}{R}J(A,A),
+    $$
+    using the fact that $I$ and $J$ are continuos function (they are integrals
+    of continuos functions). The above formula is what is known for Crofton's
+    formula \cite[p. 100]{solomon1978geometric}. 
+    
+    It remais to calculate the expected distance between a point in
+    the boundary of the circle and a point in the interior, $J(A,A)$. Without
+    loss of generality, suppose that $p$ is in the border and $q$ in the
+    interior of the circle. By its symmetry, and using the fact that distances are invariant to
+    translations, we place $p$ at the origin and the center of the circle the $x$-axis. That said, the distance between
+    the points is only $r_2$. Then, 
+    $$
+    J(A,A) = \frac{1}{\pi R^2}\int_A r_2 dA. 
+    $$
+    In polar coordinates, $q$ can be defined by $(r_2, \theta_2)$. Notice that
+    $$-\pi/2 \le \theta_2 \le \pi/2.$$
+    Besides that, let $c = \sup_{q \in \text{circle}}r_2$, then $c$ is the distance between $p$ and
+    another point in the boundary of the circle. This distance can be
+    calculated using the Law of Cosines for the triangle delimited by these
+    points and the center. Then, $c = \sqrt{R^2 + R^2 - 2R^2\cos(\pi -
+    2\theta)} = R\sqrt{2(1 + \cos(2\theta))}$. Since $\cos(2x) = \cos(x)^2 -
+    \sin(x)^2 = 2\cos(x)^2 - 1$, we have that 
+    $c = R\sqrt{4\cos(\theta)^2} = 2R\cos(\theta)$, that is, 
+    $$
+    0 \le r_2 \le 2R\cos(\theta),
+    $$
+    and (applying the Jacobian again), 
+    \begin{align*}
+        J(A,A) &= \frac{1}{\pi R^2} \int_{-\pi/2}^{\pi/2} \int_0^{2R\cos(\theta)} r_2^2 \, dr_2 \, d\theta_2 \\
+        &= \frac{1}{\pi R^2} \int_{-\pi/2}^{\pi/2} \frac{8R^3}{3}\cos(\theta_2)^3 \, d\theta_2 \\
+        &= \frac{1}{\pi R^2} \int_{-\pi/2}^{\pi/2} \frac{8R^3}{3}(1 - \sin(\theta_2)^2)\cos(\theta_2) \, d\theta_2 \\
+        &= \frac{8R}{3\pi} \int_{-1}^{1} (1 - u^2) \, du \\
+        &= \frac{32R}{9\pi}. \\
+    \end{align*}
+    Finally, 
+    $$
+    I(1) = -\frac{4}{R}I(R) + \frac{4}{R}\frac{32R}{9\pi} = -4I(1) + \frac{128}{9\pi} \implies I(1) = \frac{128}{45\pi},
+    $$
+    and 
+    \begin{equation}
+        \label{eq:closed-form}
+        I(R) = \frac{128}{45\pi}R.
+    \end{equation}
+    We conclude that $I$ has a closed form given by \eqref{eq:closed-form}.
+\end{proof}
+
+
+
  \item Propose a simulation algorithm to approximate $I$.
  Provide point and interval estimates and give theoretical guarantees about them (consistency, coverage, etc).
 \end{enumerate}
 
 % 
-% \bibliographystyle{apalike}
-% \bibliography{refs}
+\bibliographystyle{apalike}
+\bibliography{../stat_comp}
 
 \end{document}          
