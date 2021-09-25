@@ -5,6 +5,8 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage[shortlabels]{enumitem}
+\usepackage{xurl}
+\usepackage{hyperref}
 % \usepackage[portuguese]{babel}
 
 \usepackage{algorithm}
@@ -27,7 +29,7 @@
 
 % Title Page
 \title{Assignment 0: O Brother, How Far Art Thou?}
-\author{Computational Statistics \\ Instructor: Luiz Max de Carvalho}
+\author{Computational Statistics \\ Instructor: Luiz Max de Carvalho \\ Student: Lucas Machado Moschen}
 
 \begin{document}
 \maketitle
@@ -368,8 +370,7 @@ moment is given by
     \,d\theta_1\,d\theta_2\,dr_1\,dr_2. \\
     &= \frac{1}{4\pi^2 R^4}\int_{0}^{R^2}\int_{0}^{R^2}\int_{0}^{2\pi} 2\pi(r_1+r_2) \,d\theta_2\,dr_1\,dr_2 \\ 
     &= \frac{1}{4\pi^2 R^4}\int_{0}^{R^2}\int_{0}^{R^2} 4\pi^2(r_1+r_2) \,dr_1\,dr_2 \\
-    &= \frac{1}{R^4}\int_{0}^{R^2} \frac{1}{2}R^4 + R^2r_2 \,dr_2 \\
-    &= \frac{1}{R^4}(\frac{1}{2}R^6 + \frac{1}{2}R^6) = R^2, \\
+    &= \frac{1}{R^4}\int_{0}^{R^2} \frac{1}{2}R^4 + R^2r_2 \,dr_2 = \frac{1}{R^4}(\frac{1}{2}R^6 + \frac{1}{2}R^6) = R^2,
 \end{align*}
 therefore 
 $$
@@ -393,10 +394,17 @@ degrees of freedom and $\sigma '^2$ which is the unbiased Monte Carlo estimator
 for $V$.
 
 In Table \ref{tab:simulations}, we provide some information about the simulations with $R
-= 5$.The confidence intervals converge to the same value with $N = 100$, which
+= 5$. The confidence intervals converge to the same value with $N = 100$, which
 shows the Monte Carlo convergence for the variance. The point estimates also
-approximate to the tru value 4.527. Figure \ref{fig:simulations} presents
-these results in the general aspect. 
+approximate to the true value 4.527. Figure \ref{fig:simulations} presents
+these results graphically. As we have already mentioned, the
+variance is affected by $R$. In that sense, Figure \ref{fig:simulations-r}
+presents how the point estimates are affected by it. We put
+$10000$ simulations and we conclude that there is an increase of the variance
+of the error, but the relative error no. Therefore, if the precision need to
+be constant for different $R$ values, more simulations are needed. 
+
+The code is available in \url{https://github.com/lucasmoschen/Computational_Statistics/blob/master/assignments/warmup_assignment/simulation.py}.
 
 \begin{table}[ht]
     \centering
@@ -419,6 +427,13 @@ these results in the general aspect.
     \includegraphics[width=\textwidth]{figure_simulation.png}
     \caption{Convergence figure and absolute error for different values of $N$.}
     \label{fig:simulations}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figure_simulation_R.png}
+    \caption{Point estimates error and relative error for different values of $R$.}
+    \label{fig:simulations-r}
 \end{figure}
 
 \end{proof}

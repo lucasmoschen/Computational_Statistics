@@ -85,3 +85,22 @@ if __name__ == '__main__':
     folder = '/home/lucasmoschen/Documents/GitHub/computational-statistics/assignments/warmup_assignment/'
     plt.savefig(folder + 'figure_simulation.png', bbox_inches = 'tight', dpi = 300)
     plt.show()
+
+    R_values = np.linspace(1, 1000, 200)
+    E_D = np.array([simple_simulation(R, n_samples)[0] for R in R_values])
+    True_E_D = np.array([128*R/(45 * np.pi) for R in R_values])
+
+    fig, ax = plt.subplots(1,2,figsize = (15,5))
+
+    ax[0].scatter(R_values, E_D - True_E_D, color = 'black')
+    ax[0].set_title('Error for different values of R')
+    ax[0].set_xlabel('R')
+    ax[0].set_ylabel(r'$I_N^{MC} - I$')
+
+    ax[1].scatter(R_values, (E_D - True_E_D)/True_E_D, color = 'black')
+    ax[1].set_title('Relative Error for different values of R')
+    ax[1].set_xlabel('R')
+    ax[1].set_ylabel(r'$(I_N^{MC} - I) / I $')
+
+    plt.savefig(folder + 'figure_simulation_R.png', bbox_inches = 'tight', dpi = 300)
+    plt.show()
