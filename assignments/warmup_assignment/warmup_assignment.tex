@@ -7,6 +7,9 @@
 \usepackage[shortlabels]{enumitem}
 % \usepackage[portuguese]{babel}
 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Proper definitions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -294,7 +297,45 @@ Consider the Euclidean distance between $p$  and $q$, $||p-q|| = \sqrt{(p_x-q_x)
 
 
  \item Propose a simulation algorithm to approximate $I$.
- Provide point and interval estimates and give theoretical guarantees about them (consistency, coverage, etc).
+ Provide point and interval estimates and give theoretical guarantees about
+ them (consistency, coverage, etc).
+ 
+ Consider the following transformation, 
+ $$
+ p_x = \sqrt{r_1}\cos(\theta_1), p_y = \sqrt{r_1}\sin(\theta_1), q_x = \sqrt{r_2}\cos(\theta_2), q_y = \sqrt{r_2}\sin(\theta_2).
+ $$
+ The Jacobian of this transformation is 
+ $$
+ \begin{bmatrix}
+    \frac{1}{2\sqrt{r_1}}\cos(\theta_1) & -\sqrt{r_1}\sin(\theta_1) \\
+    \frac{1}{2\sqrt{r_1}}\sin(\theta_1) & \sqrt{r_1}\cos(\theta_1),
+\end{bmatrix}
+ $$
+ whose determinant is $1/2$, then the distribution is 
+ $$
+ g(r_1, \theta_1) = \frac{1}{2\pi R^2}1_{[0,R^2] \times [0,2\pi]}, 
+ $$
+ what is the uniform distribution in $[0,R^2] \times [0,2\pi]$. Then the
+ algorithm can be as follows
+
+ \begin{algorithm}
+    \caption{Simulation for problem A}\label{alg:problem-A}
+    \begin{algorithmic}
+    \Require $R > 0$, n\_samples positive integer
+    \State $r_1 \gets \operatorname{Uniform}$(low = 0, upper = $R^2$, length = n\_samples)
+    \State $r_2 \gets \operatorname{Uniform}$(low = 0, upper = $R^2$, length = n\_samples)
+    \State $\theta_1 \gets \operatorname{Uniform}$(low = 0, upper = $2\pi$,
+    length = n\_samples)
+    \State $\theta_2 \gets \operatorname{Uniform}$(low = 0, upper = $2\pi$,
+    length = n\_samples)
+    
+    \State $\text{dist} \gets \sqrt{r_1^2 + r_2^2 - 2r_1r_2\cos(\theta_1 -
+    \theta_2)}$ 
+
+    \State mean\_dist $\gets \operatorname{mean}$(dist)
+
+    \end{algorithmic}
+    \end{algorithm}
 \end{enumerate}
 
 % 
