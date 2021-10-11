@@ -1,0 +1,91 @@
+\documentclass[a4paper,12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[right=2.5cm, left=2.5cm, top=2.5cm, bottom=2.5cm]{geometry} 
+\usepackage[portuguese]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{enumerate}
+
+% no indentation
+%\usepackage{setspace}
+%\setlength{\parindent}{0in}
+
+\usepackage{graphicx} 
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+\usepackage{mathtools}
+\usepackage{amssymb, amsthm}
+
+% headers
+\usepackage{fancyhdr}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Proper definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\var}{\operatorname{Var}}
+\newcommand{\unif}{\operatorname{Unif}}
+\newcommand{\ev}{\mathbb{E}}
+\newcommand{\pr}{\mathbb{P}}
+
+\newtheorem*{aff}{Afirmação}
+
+\newtheorem{exercise}{Exercício}
+
+\theoremstyle{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header (and Footer)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{fancy} 
+\fancyhf{}
+
+\lhead{\footnotesize CE: Problem sheet 2}
+\rhead{\footnotesize Prof. Luiz} 
+\cfoot{\footnotesize \thepage} 
+
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title section of the document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty} 
+
+\begin{tabular*}{0.95\textwidth}{l @{\extracolsep{\fill}} r} 
+    {\large \bf Computational statistics 2021.2} &  \\
+    School of Applied Mathematics, Fundação Getulio Vargas &  \\
+    Professor Luiz Max de Carvalho  &  \\ 
+    \hline \\
+\end{tabular*} 
+\vspace*{0.3cm} 
+
+\begin{center}
+	{\Large \bf Problem sheet 2} 
+	\vspace{2mm}
+    \\
+	{\bf Lucas Machado Moschen}	
+\end{center}  
+\vspace{0.4cm}
+
+
+% \bibliographystyle{apalike}
+% \bibliography{../stat_comp}
+
+\end{document}          
