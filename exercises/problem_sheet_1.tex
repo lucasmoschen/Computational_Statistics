@@ -20,7 +20,6 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 
-
 \usepackage{mathtools}
 \usepackage{amssymb, amsthm}
 
@@ -28,7 +27,6 @@
 \usepackage{fancyhdr}
 \usepackage{xurl}
 \usepackage{hyperref}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -362,6 +360,133 @@
     trigonometric functions, which are more expensive that logarithm. 
 
 \end{enumerate}
+
+\begin{exercise}
+    
+\end{exercise}
+
+\begin{exercise}[Rejection and Importance Sampling]
+    Consider two probability densities $\pi$, $q$ on $\mathbb{X}$ such that
+    $\pi(x) > 0 \implies q(x) > 0$ and assume that you can easily draw samples
+    from $q$. Whenever $\pi(x)/q (x) \le M < \infty$ for any $x \in
+    \mathbb{X}$, it is possible to use rejection sampling to sample from
+    $\pi$. When $M$ is unknown or when this condition is not satisfied, we can
+    use importance sampling techniques to approximate expectations 
+    with respect to $\pi$. However it might be the case that most 
+    samples from $q$ have very small importance weights. 
+    
+    Rejection control is a method combining rejection and 
+    importance weighting. It relies on an arbitrary threshold 
+    value $c > 0$. We introduce the notation $w (x) = \pi (x) /q (x)$ 
+    and
+    $$
+    Z_c = \int_{\mathbb{X}} \min\{{1, w(x) / c}\} q(x) \, dx.
+    $$
+    Rejection control proceeds as follows. 
+    \begin{itemize}
+        \item {\bf Step a.} Generate independent $X \sim q$, 
+        $U \in \unif[0,1]$ until $U \le \min\{{1, w (X) /c }\}$.
+        \item {\bf Step b.} Return $X$.  
+    \end{itemize}
+\end{exercise}
+
+\begin{enumerate}
+    \item {\it Give the expression of the probability density 
+    $q^*(x)$ of the accepted samples.}
+
+    Notice that if $A \subseteq \mathbb{X}$ is measurable, 
+    \begin{equation*}
+        \begin{split}
+            \pr(X \in A, X \text{ accepted}) &= \int_{\mathbb{X}} \int_0^{\min(1, w(x)/c)} 1_A(x) q(x) \, du \, dx \\
+            &= \int_{\mathbb{X}} 1_A(x) \min(1, w(x)/c) q(x) \, dx. 
+        \end{split}
+    \end{equation*}
+    Besides that, $\pr(X \text{ accepted}) = Z_c$ using the aboce expression
+    with $A = \mathbb{X}$. Therefore, $q^*(x) = Z_c^{-1}\min(1, w(x)/c) q(x) =
+    Z_c^{-1} \min(q(x), \pi(x)/ c)$. 
+
+    \item Prove that 
+    $$
+    \ev_{q^*}\left([w^*(X)]^2\right) = Z_c\ev_q(\max\{{w(X), c}\}w(X)),
+    $$
+    where $w^*(x) = \pi(x) / q^*(x)$. 
+
+    The left side of the equation is 
+    $$
+    I_1 = \int_{\mathbb{X}} w^*(x)^2 q^*(x) \, dx = Z_c\int_{\mathbb{X}} \frac{\pi(x)^2}{\min(q(x), \pi(x)/ c)} \, dx,
+    $$
+    while the right side is 
+    $$
+    I_2 = Z_c\int_{\mathbb{X}} \max(w(x), c)w(x)q(x) \, dx = Z_c\int_{\mathbb{X}} \max\left(\frac{\pi^2(x)}{q(x)}, c\pi(x)\right)\, dx 
+    $$
+    Define $X_1 = \{x \in \mathbb{X} \mid cq(x) \le \pi(x)\}$ and $X_2 =
+    \mathbb{X} / X_1$. Then
+    $$
+    I_1 = Z_c\int_{X_1} \frac{\pi(x)^2}{q(x)} \, dx + Z_c\int_{X_2} c\pi(x) \, dx,,
+    $$
+    and 
+    $$
+    I_2 = Z_c\int_{X_1} \frac{\pi^2(x)}{q(x)} \, dx + Z_c\int_{X_2} c\pi(x)\, dx, 
+    $$
+    which implies that $I_1 = I_2$ as claimed. 
+
+    \item Establish that
+    $$
+    \ev_q(\min\{{w(X), c}\})\ev_q(\max\{{w (X), c}\} 
+    w(x)) \le \ev_q(\min\{{w (X) , c}\}\max\{{w(X), c}\}w (X))
+    $$
+
+    First, let's prove that 
+    $$h(w_1, w_2) = [\min\{w_1, c\} - \min\{w_2, c\}] [w_1 \max \{w_1, c\} -
+    w_2 \max\{w_2, c\}] \ge 0$$      
+    There are three cases: 
+    \begin{enumerate}[(i)]
+        \item $w_1, w_2 \le c$: In this case, $h(w_1, w_2) = (w_1 - w_2)c(w_1 -
+        w_2) = c(w_1 - w_2) \ge 0$. 
+        \item $w_1, w_2 \ge c$: In this case the first factor is zero and
+        $h(w_1, w_2) = 0$. 
+        \item $w_1 < c < w_2$: In this case, $h(w_1, w_2) = (w_1 - c)(cw_1 -
+        w_2^2) = (c - w_1)(w_2^2 - cw_1) > 0$, given that $w_2^2 > c^2 >
+        cw_1$, supposing $w_1 \ge 0$. Notice that $w_2 < c < w_1$ is
+        analogous.   
+    \end{enumerate}
+
+    Alongside this result, we see that for every realization of $X$
+    $x_1, x_2$, we have that $h(w(x_1), w(x_2)) \ge 0$, which implies 
+    that the random variables $\min(w(X), c)$ and $\max(w(X), c)w(X)$
+    are positively correlated. The claimed result follows. 
+
+    \item Deduce from the results established in (2) and (3) that
+    $$
+    \var_{q^*}(w^*(X)) \le \var_q(w(X))
+    $$
+
+    First, notice that $\ev_{q^*}(w^*(X)) = \int_{\mathbb{X}} \pi(x) \, dx  =
+    1$ and  $\ev_{q}(w(X)) = \int_{\mathbb{X}} \pi(x) \, dx  =
+    1$
+
+    We have that 
+    \begin{equation*}
+        \begin{split}
+            c\left(1 + \var_{q^*}(w^*(X))\right) &=  c\ev_{q^*}\left([w^*(X)]^2\right) \\
+            &= cZ_c\ev_q(\max\{{w(X), c}\}w(X)) s\textcolor{blue}{\quad(2)}\\
+            &= c\ev_q(\min(1, w(X) / c))\ev_q(\max\{{w(X), c}\}w(X)) \\
+            &= \ev_q(\min(c, w(X)))\ev_q(\max\{{w(X), c}\}w(X)) \\
+            &\le \ev_q\left(\min(c,w(X)) \max(w(X), c) w(X)\right)  \textcolor{blue}{\quad(3)}\\
+            &= \int_{\mathbb{X}} \min(c,w(x))\max(c,w(x))w(x)q(x) \, dx \\
+            &= c\int_{\mathbb{X}} w^2(x) q(x) \, dx \\ 
+            &= c\ev_q(w(X)^2) \\
+            &= c\left(1 + \var_{q}(w(X))\right), 
+        \end{split}
+    \end{equation*}
+    what implies the desired result. 
+
+
+\end{enumerate}
+
+\begin{exercise}
+    
+\end{exercise}
 
 % \bibliographystyle{apalike}
 % \bibliography{../stat_comp}
