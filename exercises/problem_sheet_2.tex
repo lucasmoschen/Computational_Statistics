@@ -84,6 +84,136 @@
 \end{center}  
 \vspace{0.4cm}
 
+\begin{exercise}
+    (Monte Carlo for Gaussian) 
+
+\noindent Let us consider the normal multivariate density on $\R^d$ with identity
+    covariance, that is
+    $$
+    \pi(x) = \frac{1}{(2\pi)^{d/2}} \exp\left\{-\frac{1}{2}x^Tx\right\}.
+    $$
+\end{exercise}
+
+\begin{enumerate}
+    \item {\it (Cameron-Martin formula). Show that for any $\theta \in  \R^d$ 
+    and function $\phi : \R^d \to \R$}
+    $$
+    \ev[\phi(X)] = \ev\left[\phi(X + \theta) \exp\left(-\frac{1}{2}\theta^T\theta - 
+    \theta^TX\right)\right].
+    $$
+
+    Let $\phi$ be any measurable function and $\theta \in \R^d$. Denote $I_2$ 
+    the quantity in the right of the equation. Then, 
+    \begin{equation*}
+        \begin{split}
+            I_2 &= \int_{\R^d} \phi(x+\theta)\exp\left(-\frac{1}{2}\theta^T\theta - 
+    \theta^Tx\right) \pi(x) \, dx \\
+        &= \int_{\R^d} \phi(x+\theta)\exp\left(-\frac{1}{2}\theta^T\theta - 
+        \theta^Tx\right) \pi(x) \, dx \\
+        &= \int_{\R^d} \frac{1}{(2\pi)^{d/2}}\phi(x+\theta)
+        \exp\left(-\frac{1}{2}(x + \theta)^T(x+ \theta)\right) \, dx \\
+        &= \int_{\R^d} \frac{1}{(2\pi)^{d/2}}\phi(y)
+        \exp\left(-\frac{1}{2}y^Ty\right) \, dx \\
+        &= \ev[\phi(X)]. 
+        \end{split} 
+    \end{equation*}
+
+    \item {\it It follows directly from the Cameron-Martin formula 
+    and the strong law of large numbers that, for
+    independent $X_1 , \dots, X_n \sim \pi$, the estimator}
+    $$
+    \hat{I}_n(\theta) = \frac{1}{n}\sum_{i=1}^n \phi(X_n + \theta)
+    \exp\left(-\frac{1}{2}\theta^T\theta - \theta^TX_i\right)
+    $$
+    {\it of $\ev[\phi(X)]$ is strongly consistent for any $\theta \in \R^d$ 
+    such that}
+    $$\ev\left[|\phi(X + \theta) \exp\left(-\frac{1}{2}\theta^T\theta - 
+    \theta^TX\right)|\right] < +\infty.$$
+    {\it The case $\theta = 0$ corresponds to the usual Monte Carlo 
+    estimate. The variance of $\hat{I}_n(\theta)$ is given by 
+    $\sigma^2(\theta)/n$ where}
+    $$
+    \sigma^2(\theta) = \var\left(\phi(X + \theta) \exp\left(-\frac{1}{2}\theta^T\theta - 
+    \theta^TX\right)\right).
+    $$
+    {\it We assume in the sequel that $\sigma^2(\theta) < \infty$ for 
+    any $\theta$. Show that}
+    $$
+    \sigma^2(\theta) = \ev\left[\phi^2(X) \exp\left(-\frac{1}{2}X^TX +
+    \frac{1}{2}(X-\theta)^T(X-\theta)\right)\right] - (\ev[\phi(X)])^2
+    $$
+
+    Let $\sigma^2(\theta) = \var(Y) = \ev[Y^2] - (\ev[Y])^2$ to 
+    simplify the writing. We already know that $\ev[Y] = \ev[\phi(X)]$
+    by the last exercise. Therefore, it remains to prove that 
+    $$
+    \ev[Y^2] =  \ev\left[\phi^2(X) \exp\left(-\frac{1}{2}X^TX +
+    \frac{1}{2}(X-\theta)^T(X-\theta)\right)\right].
+    $$
+
+    For that, 
+    \begin{equation*}
+        \begin{split}
+            \ev[Y^2] &= \int_{\R^d} \phi^2(x+\theta)\exp\left(-\theta^T\theta - 
+            2\theta^Tx\right) \pi(x) \, dx \\
+            &= \int_{\R^d} \frac{1}{(2\pi)^{d/2}}\phi^2(x+\theta)\exp\left(-\theta^T\theta - 
+            2\theta^Tx - \frac{1}{2}x^Tx\right) \, dx \\
+            &= \int_{\R^d} \frac{1}{(2\pi)^{d/2}}\phi^2(x+\theta)\exp\left(-(x + \theta)^T(x + \theta)
+            + \frac{1}{2}x^Tx\right) \, dx \\
+            &= \int_{\R^d} \frac{1}{(2\pi)^{d/2}}\phi^2(y)\exp\left(-y^Ty
+            + \frac{1}{2}(y - \theta)^T(y - \theta)\right) \, dx \\
+            &= \ev\left[\phi^2(X) \exp\left(-X^TX +
+            \frac{1}{2}(X-\theta)^T(X-\theta)\right)\right],
+        \end{split}
+    \end{equation*}
+    as we wanted to prove. 
+
+    \item {\it A twice differentiable function $f : \R^d \to \R$ is 
+    strictly convex if $\nabla^2 f (\theta)$ (called the Hessian of 
+    $f$) is a positive definite matrix for any $\theta \in \R^d$. 
+    Deduce from the expression of $\sigma^2(\theta)$ given in 
+    (2) that the function $\theta \to \sigma^2(\theta)$ is strictly 
+    convex.}
+
+    For that, we will use the derived expression in the last exercise
+    and we differentiate under the expected value using the Leibniz 
+    Rule. Then, 
+
+    \begin{equation*}
+        \nabla_{\theta} \sigma^2(\theta) = \ev\left[\phi^2(X)(\theta-X)\exp\left(-X^TX +
+        \frac{1}{2}(X-\theta)^T(X-\theta)\right)\right]
+    \end{equation*}
+    and 
+    \begin{equation*}
+        \begin{split}
+            \nabla^2_{\theta} \sigma^2(\theta) &= \ev\left[\phi^2(X)\exp\left(-X^TX +
+        \frac{1}{2}(X-\theta)^T(X-\theta)\right)((\theta - X)^T(\theta - X) + 1)\right], 
+        \end{split}
+    \end{equation*}
+    which is clearly positive definite since $(\theta -X)^T(\theta-X)$ 
+    is semi definite positive.
+
+    \item Show that the minimum of $\theta \to \sigma^2(\theta)$ is 
+    reached at $\theta^{*}$ such that
+    $$
+    \ev[\phi^2(X)(\theta^* - X)\exp(-\theta^{*T}X)] = 0.
+    $$
+
+    Since $\sigma^2(\theta)$ is differentiable, its critical points are 
+    the solution of $\nabla_\theta \sigma^2(\theta) = 0$, 
+    \begin{equation*}
+        \begin{split}
+            &\ev\left[\phi^2(X)(\theta-X)\exp\left(-X^TX +
+        \frac{1}{2}(X-\theta)^T(X-\theta)\right)\right] = 0 \\
+        &\implies \ev\left[\phi^2(X)(\theta-X)\exp\left(-\frac{1}{2}X^TX
+        -\theta^TX\right)\right] = 0, 
+        \end{split}
+    \end{equation*}  
+    since $e^{\theta^T\theta/2}$ is a positive constant. Since the function 
+    is strictly convex, we already know that there is only one minimal 
+    and it occurs when the above expression is zero. 
+\end{enumerate}
+
 
 % \bibliographystyle{apalike}
 % \bibliography{../stat_comp}
