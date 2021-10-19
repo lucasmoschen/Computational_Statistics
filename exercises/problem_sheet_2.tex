@@ -39,6 +39,7 @@
 \newcommand{\tr}{\operatorname{tr}}
 \newcommand{\var}{\operatorname{Var}}
 \newcommand{\unif}{\operatorname{Unif}}
+\newcommand{\bin}{\operatorname{Bin}}
 \newcommand{\ev}{\mathbb{E}}
 \newcommand{\pr}{\mathbb{P}}
 
@@ -214,6 +215,106 @@
     and it occurs when the above expression is zero. 
 \end{enumerate}
 
+\begin{exercise}
+    
+\end{exercise}
+
+\begin{exercise}
+    
+\end{exercise}
+
+\begin{exercise}
+    (Gibbs Sampler) 
+    Suppose that we wish to use the Gibbs sampler on
+    $$
+    \pi(x,y) \propto \exp\left(-\frac{1}{2}(x-1)^2(y-2)^2\right).
+    $$
+\end{exercise}
+
+\begin{enumerate}
+    \item {\it Write down the two ``full'' conditional distributions associated to $\pi(x, y)$.}
+    \begin{equation*}
+        \begin{split}
+            \pi(x) &= \int_{y \in \R} \pi(x,y) \, dy\\
+            &= \int_{y \in \R} c\exp\left(-\frac{1}{2}(x-1)^2(y-2)^2\right)\,dy \\
+            &= c\int_{y \in \R} \exp\left(-\frac{1}{2}(x-1)^2(y-2)^2\right)\,dy \\
+            &= c\int_{y \in \R} \exp\left(-\frac{1}{2/(x-1)^2} (y-2)^2\right)\,dy \\
+            &= c\sqrt{2\pi}\frac{1}{|x - 1|}
+        \end{split}
+    \end{equation*}
+    since setting $\sigma^2 = 1/(x-1)^2$, the integrand is the kernel of a
+    normal distribution with mean $2$ and variance $\sigma^2$. Therefore, its
+    integral is the normalization constant. With the same reasoning, we have
+    that 
+    $$
+    \pi(y) = c\sqrt{2\pi}\frac{1}{|y-2|}.
+    $$
+    Then, we have that 
+    $$
+    \pi(x|y) = \frac{\pi(x,y)}{\pi(y)} = \frac{1}{\sqrt{2\pi}}|y-2|\exp\left(-\frac{1}{2}(x-1)^2(y-2)^2\right) 
+    $$
+    and 
+    $$
+    \pi(y|x) = \frac{\pi(x,y)}{\pi(x)} = \frac{1}{\sqrt{2\pi}}|x-1|\exp\left(-\frac{1}{2}(x-1)^2(y-2)^2\right),
+    $$
+    which implies that 
+    $$
+    X \mid Y = y \sim \operatorname{Normal}(1, |y-2|^2)
+    $$
+    and 
+    $$
+    Y \mid X = x \sim \operatorname{Normal}(2, |x-1|^2).
+    $$ 
+    
+    \item {\it Does the resulting Gibbs sampler make any sense?}
+    
+    The problem with that Gibbs sampler is that the samples $(x^n, y^n)$
+    converges to $(1,2)$ when $n$ is sufficiently high. This happens because
+    the variances are very low in the region of greater mass. Therefore, even
+    if the initial points are far from the mode, the sampling will explore it
+    and wheen it happens, it will get stuck. 
+\end{enumerate}
+
+\begin{exercise}
+    (Gibbs Sampler)
+    For $i = 1, \dots , T$ consider $Z_i = X_i + Y_i$ with independent $X_i,
+    Y_i$ such that
+    $$
+    X_i \sim \bin(m_i , \theta_1), Y_i \sim \bin(n_i, \theta_2).
+    $$
+\end{exercise}
+
+\begin{enumerate}
+    \item {\it We assume $0 \le z_i \le m_i + n_i$ for $i = 1, \dots , T$. We
+    observe $z_i$ for $i = 1,\dots, T$ and the $n_i , m_i$ for
+    $i = 1, \dots, T$ are given. Give the expression of the likelihood
+    function $p(z_1, \dots, z_T| \theta_1, \theta_2)$.}
+    
+    Supposing conditionally independent samples, we have that 
+    $$
+    p(z_1, \dots, z_T \mid \theta_1, \theta_2) = \prod_{i=1}^T p(z_i\mid \theta_1, \theta_2)
+    $$
+    Note that 
+    \begin{equation*}
+        \begin{split}
+            \pr(Z_i = X_i + Y_i = k) &= \sum_{j=0}^k \pr(X_i = j)\pr(Y_i = k-j) \\
+            &= \sum_{j=0}^k \binom{m_i}{j}\binom{n_i}{j} (\theta_1-\theta_1\theta_2)^j(\theta_2-\theta_1\theta_2)^{k-j}. 
+        \end{split}
+    \end{equation*}
+    Therefore, 
+    $$
+    p(z_1, \dots, z_T \mid \theta_1, \theta_2) = \prod_{i=1}^T \sum_{j=0}^{z_i} \binom{m_i}{j}\binom{n_i}{j} (\theta_1-\theta_1\theta_2)^j(\theta_2-\theta_1\theta_2)^{z_i-j}.
+    $$
+
+    \item {\it Assume we set independent uniform priors $\theta_1 \sim
+    \unif[0,1], \theta_2 \sim \unif[0,1]$. Propose a Gibbs sampler to sample from $p( \theta_1 , \theta_2 \mid z_1 , \dots, z_T)$.}
+    
+    We know that 
+    $$
+    p( \theta_1 , \theta_2 \mid z_1 , \dots, z_T) \propto p(z_1, \dots, z_T \mid \theta_1, \theta_2).    
+    $$
+
+\end{enumerate}
 
 % \bibliographystyle{apalike}
 % \bibliography{../stat_comp}
