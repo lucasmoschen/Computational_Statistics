@@ -313,7 +313,58 @@
     $$
     p( \theta_1 , \theta_2 \mid z_1 , \dots, z_T) \propto p(z_1, \dots, z_T \mid \theta_1, \theta_2).    
     $$
-
+    and we want to specify 
+    $$
+    p(\theta_1^t \mid \theta_2^{t-1}, z_1, \dots, z_T) 
+    $$
+    and
+    $$
+    p(\theta_2^t \mid \theta_1^{t}, z_1, \dots, z_T).
+    $$ 
+    Since we do not know how to sample from these distributions, we have to
+    introduce auxiliary variables to help out. Let $X_1, \dots, X_T$ and $Y_1,
+    \dots, Y_T$ be the variables introduced in the exercise. We denote
+    $X_{1:T} = X_1, \dots, X_T$. Then 
+    $$ 
+    \pr(\theta_1 \mid \theta_2, X_{1:T}, Y_{1:T}, Z_{1:T}) = \pr(\theta_1 \mid X_{1:T}),  
+    $$
+    since given $X_{1:T}$, we have that $\theta_1$ is independent of the other
+    random variables. Analogously,  
+    $$ 
+    \pr(\theta_2 \mid \theta_1, X_{1:T}, Y_{1:T}, Z_{1:T}) = \pr(\theta_2 \mid Y_{1:T}).  
+    $$
+    Given that $\{X_i \mid \theta_1\}_{i=1}^T$ are independent and have
+    binomial distribution, and $\theta_1$ has Beta distribution with
+    parameters $\alpha = 1$ and $\beta = 1$, we know that, 
+    $$
+    \theta_1 \mid X_{1:T} = x_{1:T} \sim \operatorname{Beta}\left(1 + \sum_{i=1}^T x_i, 1 + \sum_{i=1}^T m_i - x_i\right)
+    $$
+    and 
+    $$
+    \theta_2 \mid Y_{1:T} = y_{1:T} \sim \operatorname{Beta}\left(1 + \sum_{i=1}^T y_i, 1 + \sum_{i=1}^T n_i - y_i\right).
+    $$
+    It remains to sample from 
+    $$
+    X_{1:T}, Y_{1:T} \mid \theta_1, \theta_2, Z_{1:T}.
+    $$
+    Note that 
+    \begin{equation*}
+        \begin{split}
+            \pr(X_{1:T} = x_{1:T}, Y_{1:T} = y_{1:T} \mid \theta_1, \theta_2, Z_{1:T}) &= \pr(X_{1:T} = x_{1:T} \mid \theta_1, \theta_2, Z_{1:T},  Y_{1:T}) \\
+            &\times \pr(Y_{1:T} = y_{1:T} \mid \theta_1, \theta_2, Z_{1:T}). \\
+        \end{split}
+    \end{equation*}
+    The first term is $1_{\{x_{1:T} = Z_{1:T} - Y_{1:T}\}}$, while the second
+    can be writing as follows: 
+    \begin{equation*}
+        \begin{split}
+            \pr(Y_{1:T} = y_{1:T} \mid \theta_1, \theta_2, Z_{1:T}) &= \prod_{i=1}^T \pr(Y_i = y_i \mid \theta_1, \theta_2, Z_i) \\
+            &= \prod_{i=1}^T \bin(y_i; n_i, \theta_2) \cdot \bin(z_i - y_i; m_i, \theta_1).
+        \end{split}
+    \end{equation*}
+    Since this distribution has finite support, one can calculate its
+    constant. Therefore, we have defined our Gibbs sampler. 
+    
 \end{enumerate}
 
 % \bibliographystyle{apalike}
