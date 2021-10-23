@@ -298,12 +298,12 @@
     \begin{equation*}
         \begin{split}
             \pr(Z_i = X_i + Y_i = k) &= \sum_{j=0}^k \pr(X_i = j)\pr(Y_i = k-j) \\
-            &= \sum_{j=0}^k \binom{m_i}{j}\binom{n_i}{j} (\theta_1-\theta_1\theta_2)^j(\theta_2-\theta_1\theta_2)^{k-j}. 
+            &= \sum_{j=0}^k \binom{m_i}{j}\binom{n_i}{k-j}\theta_1^j(1-\theta_1)^{m_i - j}\theta_2^{k-j}(1 - \theta_2)^{n_i - k + j}. 
         \end{split}
     \end{equation*}
     Therefore, 
     $$
-    p(z_1, \dots, z_T \mid \theta_1, \theta_2) = \prod_{i=1}^T \sum_{j=0}^{z_i} \binom{m_i}{j}\binom{n_i}{j} (\theta_1-\theta_1\theta_2)^j(\theta_2-\theta_1\theta_2)^{z_i-j}.
+    p(z_1, \dots, z_T \mid \theta_1, \theta_2) = \prod_{i=1}^T \sum_{j=0}^{z_i} \binom{m_i}{j}\binom{n_i}{z_i-j}\theta_1^j(1-\theta_1)^{m_i - j}\theta_2^{z_i-j}(1 - \theta_2)^{n_i - z_i + j}.
     $$
 
     \item {\it Assume we set independent uniform priors $\theta_1 \sim
