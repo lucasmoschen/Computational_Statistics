@@ -20,40 +20,41 @@ def initiate_model():
     print("INFO - Model done!")
     return stan_model 
 
-def binomial_product(y, z, m, n, theta1, theta2):
-    return comb(n, y) * comb(m, z-y) * (theta2*(1-theta1)/(theta1*(1-theta2)))**y
-
-def probabilities_binomial_product(z, m, n, theta1, theta2):
+def probabilities_binomial_product(z, m, n, theta1, theta2, comb_precalc):
     p = np.zeros(min(n, z) - max(0, z-m)+1)
     i = -1
     for y in range(max(0, z-m), min(n, z)+1):
         i += 1
-        p[i] = binomial_product(y, z, m, n, theta1, theta2)
+        p[i] = comb_precalc[i] * (theta2*(1-theta1)/(theta1*(1-theta2)))**y
     return p/sum(p)
 
-def binomial_product_rng(z, m, n, theta1, theta2):
+def binomial_product_rng(z, m, n, theta1, theta2, comb_precalc):
     u = np.random.uniform()
-    p = probabilities_binomial_product(z, m, n, theta1, theta2)
+    p = probabilities_binomial_product(z, m, n, theta1, theta2, comb_precalc)
     index = np.argmax(u < np.cumsum(p))
     return index + max(0,z-m)
 
-def gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2):
+def gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2, comb_precalc):
     for i in range(T):
-        y[i] = binomial_product_rng(z[i], m[i], n[i], theta1, theta2)
+        y[i] = binomial_product_rng(z[i], m[i], n[i], theta1, theta2, comb_precalc[i])
     theta1 = np.random.beta(1 + sum(z-y), 1 + sum(m-z+y))
     theta2 = np.random.beta(1 + sum(y), 1 + sum(n-y))
     return theta1, theta2
 
 def gibbs_sampler(z, m, n, T, warmup, iterations):
+
+    comb_precalc = [[comb(n[i], y) * comb(m[i], z[i]-y) for y in range(max(0, z[i]-m[i]), min(n[i], z[i])+1)]
+                for i in range(T)]
+                
     y = np.zeros(T)
     theta1 = np.random.uniform()
     theta2 = np.random.uniform()
     for _ in tqdm(range(warmup), desc='Warmup'):
-        theta1, theta2 = gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2)
+        theta1, theta2 = gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2, comb_precalc)
 
     samples = np.zeros((iterations, 2))
     for ite in tqdm(range(iterations), desc='Sampling'):
-        theta1, theta2 = gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2)
+        theta1, theta2 = gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2, comb_precalc)
         samples[ite, 0] = theta1
         samples[ite, 1] = theta2
     return samples
