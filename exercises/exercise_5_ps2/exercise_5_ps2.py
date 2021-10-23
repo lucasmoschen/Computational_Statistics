@@ -64,8 +64,8 @@ def main():
     """
     theta1 = 0.3
     theta2 = 0.5
-    m = np.random.randint(0, 20, size=30)
-    n = np.random.randint(0, 20, size=30)
+    m = np.random.randint(0, 20, size=50)
+    n = np.random.randint(0, 20, size=50)
     X = np.random.binomial(n=m, p=theta1)
     Y = np.random.binomial(n=n, p=theta2)
     Z = X + Y
@@ -75,7 +75,7 @@ def main():
     fitting = stan_model.sampling(data=data)
     print(fitting)
 
-    sampling = gibbs_sampler(Z, m, n, len(m), warmup=2000, iterations=1000)
+    sampling = gibbs_sampler(Z, m, n, len(m), warmup=2000, iterations=2000)
 
     print("Gibbs theta1 mean: {}".format(sampling[:, 0].mean()))
     print("Stan theta1 mean: {}".format(fitting.extract()['theta1'].mean()))
