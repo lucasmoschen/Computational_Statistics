@@ -1,4 +1,9 @@
 #!usr/bin/env python
+"""
+This file does the exercise 5 from Paper Sheet 2 using Gibbs Sampler
+approach and Stan Sampler.
+Student: Lucas Machado Moschen
+"""
 
 import pickle
 import numpy as np
@@ -10,17 +15,20 @@ def initiate_model():
     """
     It gets the Stan model.
     """
-    folder = '/home/lucasmoschen/Documents/GitHub/computational-statistics/exercises/exercise_5_ps2/'
+    where = '/home/lucasmoschen/Documents/GitHub/computational-statistics/exercises/exercise_5_ps2/'
     try:
-        stan_model = pickle.load(open(folder + 'exercise_5_ps2.pkl', 'rb'))
+        stan_model = pickle.load(open(where + 'exercise_5_ps2.pkl', 'rb'))
     except FileNotFoundError:
-        stan_model = ps.StanModel(file=folder + "exercise_5_ps2.stan")
-        with open(folder + "exercise_5_ps2.pkl", 'wb') as file:
+        stan_model = ps.StanModel(file=where + "exercise_5_ps2.stan")
+        with open(where + "exercise_5_ps2.pkl", 'wb') as file:
             pickle.dump(stan_model, file)
     print("INFO - Model done!")
-    return stan_model 
+    return stan_model
 
 def probabilities_binomial_product(z, m, n, theta1, theta2, comb_precalc):
+    """
+    Finite distribution for each y.
+    """
     p = np.zeros(min(n, z) - max(0, z-m)+1)
     i = -1
     for y in range(max(0, z-m), min(n, z)+1):
@@ -29,12 +37,18 @@ def probabilities_binomial_product(z, m, n, theta1, theta2, comb_precalc):
     return p/sum(p)
 
 def binomial_product_rng(z, m, n, theta1, theta2, comb_precalc):
+    """
+    Sampling from the density given by product of binomials.
+    """
     u = np.random.uniform()
     p = probabilities_binomial_product(z, m, n, theta1, theta2, comb_precalc)
     index = np.argmax(u < np.cumsum(p))
-    return index + max(0,z-m)
+    return index + max(0, z-m)
 
 def gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2, comb_precalc):
+    """
+    Each iteration of gibbs sampler.
+    """
     for i in range(T):
         y[i] = binomial_product_rng(z[i], m[i], n[i], theta1, theta2, comb_precalc[i])
     theta1 = np.random.beta(1 + sum(z-y), 1 + sum(m-z+y))
@@ -42,10 +56,12 @@ def gibbs_sampler_iteration(y, z, m, n, T, theta1, theta2, comb_precalc):
     return theta1, theta2
 
 def gibbs_sampler(z, m, n, T, warmup, iterations):
-
-    comb_precalc = [[comb(n[i], y) * comb(m[i], z[i]-y) for y in range(max(0, z[i]-m[i]), min(n[i], z[i])+1)]
-                for i in range(T)]
-                
+    """
+    Gibbs sampler studied.
+    """
+    comb_precalc = [[comb(n[i], y) * comb(m[i], z[i]-y)
+                     for y in range(max(0, z[i]-m[i]), min(n[i], z[i])+1)]
+                    for i in range(T)]
     y = np.zeros(T)
     theta1 = np.random.uniform()
     theta2 = np.random.uniform()
