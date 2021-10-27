@@ -216,8 +216,163 @@
 \end{enumerate}
 
 \begin{exercise}
-    
+    (Metropolis-Hastings)
+    Let $\mathbb{X}$ be a finite state-space. Consider the following Markov
+    transition kernel
+    $$T(x, y) = \alpha(x, y)q(x, y) + \left(1 - \sum_{z \in \mathbb{X}}
+    \alpha(x, z) q(x, z)\right) \delta_x(y)$$
+    where $q(x, y) \ge 0, \sum_{y \in \mathbb{X}} q (x, y) = 1$ and $0 \le\alpha (x, y) \le 1$ for any $x, y \in \mathbb{X}$. $\delta_x(y)$ is the Kronecker symbol.    
 \end{exercise}
+
+\begin{enumerate}
+    \item {\it Explain how you would simulate a Markov chain with transition kernel $T$.}
+    
+    Let $x^{(0)} \in \mathbb{X}$ be a initial point. Then, we sample $y$
+    from $q(x^{(j-1)}, \cdot)$ and $u \sim \unif[0,1]$. Then we set $x^{(j)} =
+    x^{(j-1)}$ if $u > \alpha(x,y)$ and $x^{(j)} = y$, otherwise. Notice that 
+    \begin{equation*}
+        \pr(X^{(t)} = y \mid X^{(t-1)} = x) = \begin{cases}
+            \alpha(x,y)q(x,y), &\text{if } y \neq x \\
+            1 - \sum_{z \in \mathbb{X} / \{x\}} \alpha(x,y)q(x,y), &\text{if } y = x,
+        \end{cases}
+    \end{equation*}
+    which is exactly the formula of $T$.
+    
+    \item {\it Let $\pi$ be a probability mass function on $\mathbb{X}$. Show
+    that if $$\alpha(x, y) = \frac{\gamma(x,y)}{\pi(x)q(x,y)}$$
+    where $\gamma(x, y) = \gamma(y, x)$ and $\gamma(x, y)$ is chosen such that
+    $0 \le \alpha (x, y) \le 1$ for any $x, y \in \mathbb{X}$ then $T$ is
+    $\pi$-reversible.}
+
+    By Proposition 2.3 from the notes, we have to show that 
+    $\pi$ satisfies detailed balance with respect to $T$,
+    that is, 
+    $$
+    \pi(x)T(x,y) = \pi(y)T(y,x).
+    $$
+    If $x = y$, this is clearly true. If $x \neq y$, we have that 
+    \begin{equation*}
+        \begin{split}
+            \pi(x)T(x,y) &= \pi(x)\alpha(x,y)q(x,y) \\
+            &= \gamma(x,y) \\ 
+            &= \gamma(y,x) \\
+            &= \frac{\pi(y)q(y,x)}{\pi(y)q(y,x)}\gamma(y,x) \\
+            &= \pi(y)\alpha(y,x)q(y,x) \\
+            &= \pi(y)T(y,x).
+        \end{split}
+    \end{equation*}
+
+    \item {\it Show that the Metropolis-Hastings algorithm corresponds to a particular choice of $\gamma(x, y)$.}
+
+    Setting $\gamma(x,y) = \min\{\pi(x)q(x,y), \pi(y)q(y,x)\}$, we will 
+    have that 
+    $$
+    \alpha(x,y) = \frac{\gamma(x,y)}{\pi(x)q(x,y)} = \min\left\{1, 
+    \frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right\},
+    $$
+    exactly as in the Metropolis-Hastings algorithm. Besides that, 
+    it is clearly that $\gamma(x,y) = \gamma(y,x)$. 
+
+    \item {\it Let $\pi$ be a probability mass function on the finite space
+    $\mathbb{X}$ such that $\pi(x) > 0$ for any $x \in \mathbb{X}$.
+    To sample from $\pi$, we run a Metropolis-Hastings chain $(X^{(t)})_{t \ge
+    1}$ with proposal $q(x, y) \ge 0$, such that $\sum_{y \in X} q (x, y) = 1$
+    and $q(x, x) = 0$ for any $x \in \mathbb{X}$. Consider here the 
+    sequence $(Y^{(k)})_{k\ge 1}$ of accepted proposals: $Y^{(1)} =
+    X^{(\tau_1)}$ where $\tau_1 = 1$ and, for $k \ge 2$, $Y^{(k)} 
+    = X^{(\tau_k)}$ where $\tau_k := \min\{t : t > \tau_{k-1}, X^{(t)} 
+    \neq Y^{(k-1)}\}$.
+    
+    Let $\phi : \mathbb{X} \to \R$ be a test function. Show that the 
+    estimate $\frac{1}{\tau_k - 1}\sum_{t=1}^{\tau_k-1} \phi(X^{(t)})$
+    can be rewritten as a function of $(Y^{(k)})_{k\ge 1}$ and $(\tau_k)_{k
+    \ge 1}$ and prove that the sequence $(Y^{(k)})_{k \ge  1}$ is a Markov
+    chain with transition kernel 
+    }
+    $$
+    K(x,y) = \frac{\alpha(x,y)q(x,y)}{\sum_{z \in \mathbb{X}} \alpha(x,y)q(x,y)}.
+    $$
+
+    Notice that $X^{(\tau_i)} = X^{(t)}, \forall t \in [\tau_i, \tau_{i+1})$. 
+    Then, 
+    $$
+    \frac{1}{\tau_k - 1}\sum_{t=1}^{\tau_k-1} \phi(X^{(t)}) 
+    = \frac{1}{\tau_k - 1} \sum_{i=1}^{k-1} (\tau_{i+1} - \tau_i)\phi(Y^{(i)}).
+    $$
+
+    Since $(X^{(t)})_{t \ge 1}$ is a Markov chain, by the Strong 
+    Markov Property, if $y \neq x$, 
+    \begin{equation*}
+        \begin{split}
+            \pr(Y^{(k)} = y \mid Y^{(k-1)} = x, \dots, Y^{(1)} = y_1) 
+            &= \pr(X^{(\tau_k)} = y \mid X^{(\tau_{k-1})} = x, \dots, X^{(\tau_1)} = y_1) \\
+            &= \pr(X^{(\tau_k)} = y \mid X^{(\tau_{k-1})} = x) \\ 
+            &= \pr(y \text{ is accepted } \mid \text{some was accepted}, x) \\
+            &= K(x,y).
+        \end{split}
+    \end{equation*}
+
+    \item {\it Show that the transition kernel $K(x, y)$ of the 
+    Markov chain $(Y^{(k)})_{k\ge 1}$ is $\tilde{\pi}$-reversible 
+    where}
+    $$
+    \tilde{\pi}(x) = \frac{\pi(x)m(x)}{\sum_{z \in \mathbb{X}} \pi(z)m(z)}
+    $$
+    {\it with}
+    $$
+    m(x) := \sum_{z \in \mathbb{X}} \alpha(x,z)q(x,z).
+    $$
+
+    Let $Z = \sum_{z \in \mathbb{X}} \pi(z)m(z)$. We have that 
+    \begin{equation*}
+        \begin{split}
+            \tilde{\pi}(x)K(x,y) &= \frac{\pi(x)m(x)}{Z}\frac{\alpha(x,y)q(x,y)}{m(x)} \\
+            &= \frac{\pi(x)\alpha(x,y)q(x,y)}{Z} \\
+            &= \frac{\pi(y)\alpha(y,x)q(y,x)}{Z} \\
+            &= \frac{\pi(y)m(y)}{Z}\frac{\alpha(y,x)q(y,x)}{m(y)} \\
+            &= \tilde{\pi}(y)K(y,x),
+        \end{split}
+    \end{equation*}
+    what proves the detailed balance and so the reversibility. 
+
+    \item {\it Assume that for some test function $\phi : \mathbb{X} \to \R$
+    we have $\frac{1}{k}\sum_{i=1}^k \phi(Y^{(i)})$ converges to $\sum_{x\in \mathbb{X}}
+    \phi(x) \tilde{\pi}(x)$ almost surely and additionally assume that 
+    $m(x)$ can be computed exactly for any $x \in \mathbb{X}$.
+    Propose a strongly consistent estimate of $\sum_{x\in \mathbb{X}}
+    \phi(x) \pi(x)$ based on the Markov chain $(Y^{(k)})_{k\ge 1}$ which does
+    not rely on $(\tau_k)_{k \ge 1}$.}
+
+    Notice that 
+    $$
+    \sum_{x\in \mathbb{X}}
+    \phi(x) \pi(x) = \frac{\sum_{x \in \mathbb{X}} 
+    \phi(x)\frac{\pi(x)}{\tilde{\pi}(x)}\tilde{\pi}(x)}{\sum_{x \in \mathbb{X}}
+    \frac{\pi(x)}{\tilde{\pi}(x)}\tilde{\pi}(x)},
+    $$
+    since $\pi$ is a probability distribution. Notice that this can 
+    be turned to a Importance Sampling. We have that $\tilde{\pi}$ is the stationary 
+    distribution of $(Y^{(k)})_{k\ge 1}$, which we already know how to 
+    sample using a Metropolis-Hastings algorithm. It remains to calculate 
+    the weights $\pi(x)/\tilde{\pi(x)}$, which can be calculated from 
+    $$
+    \frac{\pi(x)}{\tilde{\pi}(x)} = \frac{Z}{m(x)},
+    $$
+    and
+    $$
+    \sum_{x\in \mathbb{X}}
+    \phi(x) \pi(x) = \frac{\sum_{x \in \mathbb{X}} 
+    \phi(x)\frac{Z}{m(x)}\tilde{\pi}(x)}{\sum_{x \in \mathbb{X}}
+    \frac{Z}{m(x)}\tilde{\pi}(x)}  = \frac{\sum_{x \in \mathbb{X}} 
+    \phi(x)\frac{1}{m(x)}\tilde{\pi}(x)}{\sum_{x \in \mathbb{X}}
+    \frac{1}{m(x)}\tilde{\pi}(x)}.
+    $$ 
+    Hence, a strongly consistent estimate is 
+    $$
+    \frac{\sum_{i=1}^k \phi(Y^{(i)})\frac{1}{m(Y^{(i)})}}{\sum_{i=1}^k \frac{1}{m(Y^{(i)})}}.
+    $$
+
+\end{enumerate}
 
 \begin{exercise}
     
