@@ -1,0 +1,379 @@
+\documentclass[a4paper,12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[right=2.5cm, left=2.5cm, top=2.5cm, bottom=2.5cm]{geometry} 
+\usepackage[portuguese]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{enumerate}
+
+% no indentation
+%\usepackage{setspace}
+%\setlength{\parindent}{0in}
+
+\usepackage{graphicx} 
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
+\usepackage{mathtools}
+\usepackage{amssymb, amsthm}
+
+% headers
+\usepackage{fancyhdr}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Proper definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\var}{\operatorname{Var}}
+\newcommand{\unif}{\operatorname{Unif}}
+\newcommand{\bin}{\operatorname{Bin}}
+\newcommand{\ev}{\mathbb{E}}
+\newcommand{\pr}{\mathbb{P}}
+
+\newtheorem*{aff}{Afirmação}
+
+\newtheorem{exercise}{Exercício}
+
+\newtheorem*{theorem}{Theorem}
+
+\theoremstyle{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header (and Footer)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{fancy} 
+\fancyhf{}
+
+\lhead{\footnotesize CE: Problem sheet 3}
+\rhead{\footnotesize Prof. Luiz} 
+\cfoot{\footnotesize \thepage} 
+
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title section of the document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty} 
+
+\begin{tabular*}{0.95\textwidth}{l @{\extracolsep{\fill}} r} 
+    {\large \bf Computational statistics 2021.2} &  \\
+    School of Applied Mathematics, Fundação Getulio Vargas &  \\
+    Professor Luiz Max de Carvalho  &  \\ 
+    \hline \\
+\end{tabular*} 
+\vspace*{0.3cm} 
+
+\begin{center}
+	{\Large \bf Problem sheet 3} 
+	\vspace{2mm}
+    \\
+	{\bf Lucas Machado Moschen}	
+\end{center}  
+\vspace{0.4cm}
+
+\begin{exercise}
+\end{exercise}
+
+\begin{exercise}
+\end{exercise}
+
+\begin{exercise}
+    (Metropolis-Hastings and Gibbs Sampler)
+    Let $\mathbb{X}$ be a finite state-space. We consider the following Markov
+    transition kernel
+    $$
+    T(x,y) = \alpha(x,y)q(x,y) + \left(1 - \sum_{x \in \mathbb{X} \alpha(x,z)q(x,z)}\right)\delta_x(y)
+    $$
+    where $q(x, y) \ge 0$, $\sum_{y \in \mathbb{X}} q (x, y) = 1$ and $0 \le
+    \alpha(x, y) \le 1$ for any $x, y \in \mathbb{X}$, $\delta_x(y)$ is the
+    Kronecker symbol.
+\end{exercise}
+
+\begin{enumerate}
+    \item {\it Let $\pi$ be a probability mass function on $\mathbb{X}$. Show
+    that if $$\alpha(x, y) = \frac{\gamma(x,y)}{\pi(x)q(x,y)}$$
+    where $\gamma(x, y) = \gamma(y, x)$ and $\gamma(x, y)$ is chosen such that
+    $0 \le \alpha (x, y) \le 1$ for any $x, y \in \mathbb{X}$ then $T$ is
+    $\pi$-reversible.}
+
+    By Proposition 2.3 from the notes, we have to show that 
+    $\pi$ satisfies detailed balance with respect to $T$,
+    that is, 
+    $$
+    \pi(x)T(x,y) = \pi(y)T(y,x).
+    $$
+    If $x = y$, this is clearly true. If $x \neq y$, we have that 
+    \begin{equation*}
+        \begin{split}
+            \pi(x)T(x,y) &= \pi(x)\alpha(x,y)q(x,y) \\
+            &= \gamma(x,y) \\ 
+            &= \gamma(y,x) \\
+            &= \frac{\pi(y)q(y,x)}{\pi(y)q(y,x)}\gamma(y,x) \\
+            &= \pi(y)\alpha(y,x)q(y,x) \\
+            &= \pi(y)T(y,x).
+        \end{split}
+    \end{equation*}
+
+    \item {\it Verify that the Metropolis-Hastings algorithm corresponds to
+    $$\gamma(x, y) = \min\{\pi(x) q (x, y), \pi (y) q (y, x)\}.$$     The Baker
+    algorithm is an alternative corresponding to}
+    $$\gamma(x,y) =
+    \frac{\pi(x)q(x,y)\pi(y)q(y,x)}{\pi(x)q(x,y)+\pi(y)q(y,x)}.$$
+    {\it Give the associated acceptance probability $\alpha(x, y)$ for the
+    Baker algorithm.}
+    
+    Setting $\gamma(x,y) = \min\{\pi(x)q(x,y), \pi(y)q(y,x)\}$, we will 
+    have that 
+    $$
+    \alpha(x,y) = \frac{\gamma(x,y)}{\pi(x)q(x,y)} = \min\left\{1, 
+    \frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right\},
+    $$
+    exactly as in the Metropolis-Hastings algorithm. Besides that, 
+    it is clearly that $\gamma(x,y) = \gamma(y,x)$. 
+
+    We will have for Baker algorithm that
+    $$\alpha(x, y) = \frac{\gamma(x,y)}{\pi(x)q(x,y)} =
+    \frac{\pi(y)q(y,x)}{\pi(x)q(x,y)+\pi(y)q(y,x)} = \frac{1}{1 + \frac{\pi(x)q(x,y)}{\pi(y)q(y,x)}}$$
+    
+    \item {\it Peskun’s theorem (1973) is a very important result in the MCMC literature which states the following.}
+    \begin{theorem}
+        Let $T_1$ and $T_2$ be two reversible, aperiodic and irreducible Markov transition kernels w.r.t
+        $\pi$. If $T_1(x,y) \ge T_2(x,y)$, for all $x \neq y \in \mathbb{X}$
+        then, for all funtions $\phi : \mathbb{X} \to \R$, the asymptotic
+        variance of MCMC estimators $\hat{I}_n(\phi) =
+        \frac{1}{n}\sum_{t=0}^{n-1} \phi(X^{(t)})$ of $I(\phi) =
+        \ev_{\pi}[\phi(X)]$ is smaller for $T_1$ than $T_2$. 
+    \end{theorem}
+
+    {\it Assume that you are in a scenario where both Metropolis-Hastings and Baker algorithms yield aperiodic
+    and irreducible Markov chains. Which algorithm provides estimators of $I(\phi)$ with the lowest asymptotic
+    variance?}
+
+    The ideia is to use Peskun's theorem. Therefore, we compute both
+    transition kernels. For the Metropolis-Hastings algorithm, 
+    $$
+    T_1(x,y) = \alpha(x,y)q(x,y) = \frac{\min\{\pi(x)q(x,y), \pi(y)q(y,x)\}}{\pi(x)}.
+    $$
+    Baker algorithm yields 
+    $$
+    T_2(x,y) = \frac{\gamma(x,y)}{\pi(x)} = \frac{1}{\pi(x)}\frac{\pi(x)q(x,y)\pi(y)q(y,x)}{\pi(x)q(x,y) + \pi(y)q(y,x)}.
+    $$
+    Suppose that $\pi(x)q(x,y) \le \pi(y)q(y,x)$. We will have that 
+    \begin{equation*}
+        \begin{split}
+            \pi(x)^2q(x,y)^2 \ge 0 &\rightarrow \pi(x)q(x,y)(\pi(x)q(x,y) + \pi(y)q(y,x)) \ge \pi(x)q(x,y)\pi(y)q(y,x) \\
+            &\rightarrow \pi(x)q(x,y) \ge \frac{\pi(x)q(x,y)\pi(y)q(y,x) }{\pi(x)q(x,y) + \pi(y)q(y,x)} \\
+            &\rightarrow T_1(x,y) \ge T_2(x,y).
+        \end{split}
+    \end{equation*}
+    If $\pi(x)q(x,y) \ge \pi(y)q(y,x)$, a similar result is achieved by the
+    symmetry of the problem. Therefore, by Peskun's theorem,
+    Metropolis-Hastings have smaller asymptotic variance.  
+
+    \item {\it Suppose that $X = (X_1, \dots, X_d)$ where $X_i$ takes $m \ge 2$ possible values and $\pi(x) = \pi(x_1, \dots, x_d)$ is the
+    distribution of interest. The random scan Gibbs sampler proceeds as
+    follows.}
+
+    {\bf Random scan Gibbs sampler.} {\it Let $(X_1^{(1)}, \dots, X_d^{(1)})$ be
+    the initial state then iterate for $t=2,3,\dots$}
+    \begin{itemize}
+        \item {\it Sample an index $K$ uniformly on $\{1,\dots,d\}$}
+        \item {\it Set $X_i^{(t)} = X_i^{(t-1)}$ for $i \neq K$ and sample}
+        $$X_K^{(t)} \sim \pi_{X_k\mid X_{-K}}(\cdot \mid X_1^{(t)}, \dots,
+        X_{K-1}^{(t)}, X_{K+1}^{(t)}, \dots, X_d^{(t)}).$$
+    \end{itemize}
+    {\it 
+    Consider now a modified random scan Gibbs sampler where instead of
+    sampling $X_K^{(t)}$ from its conditional distribution, we use the
+    following proposal}
+    $$q(X_K = x_K^* \mid x_{-K}, x_K) = \begin{cases}
+        \frac{\pi_{X_K\mid X_{-K}}(x_K^*\mid x_{-K})}{1 - \pi(x_K\mid x_{-K})}
+        &\text{for } x_K^* \neq x_K \\
+        0 &\text{otherwise.}
+    \end{cases}$$
+    {\it where $x_{-K} := (x_1, \dots, x_{K-1}, x_{K+1}, \dots, x_d)$ which
+    is accepted with probability}
+    $$
+    \alpha(x_{-K}, x_K, x_K^*) = \min\left\{1, \frac{1-\pi(x_K\mid x_{-K})}{1-\pi(x_K^*\mid x_{-K})}\right\}.
+    $$
+    {\bf Modified random scan Gibbs sampler.} {\it Let $(X_1^{(1)}, \dots, X_d^{(1)})$ be
+    the initial state then iterate for $t=2,3,\dots$}
+    \begin{itemize}
+        \item {\it Sample an index $K$ uniformly on $\{1,\dots,d\}$}
+        \item {\it Set $X_i^{(t)} = X_i^{(t-1)}$ for $i \neq K$} 
+        \item {\it Sample $X_K^{(t)}$ such that $\pr(X_K = x_K^*) = q(X_K =
+        x_K^* \mid x_{-K}, x_K)$}
+        \item {\it With probability $\alpha(x_{-K}, x_K, x_K^*)$, set
+        $X_K^{(t)} = X_K^*$ and $X_K^{t} = X_K^{t-1}$ otherwise.}
+    \end{itemize}
+
+    {\it Assume that both algorithms provide an irreducible and aperiodic Markov chain. Check that both
+    transition kernels are $\pi$-reversible and use Peskun’s theorem to show that the modified random scan
+    Gibbs sampler provides estimators of $I(\phi)$ with a lower asymptotic variance than the standard random
+    scan Gibbs sampler.}
+
+    We have to verify the detailed balance for $\pi$. The kernel for 
+    random scan Gibbs sampler is for $x_j \neq y_j$ para apenas um $j$,  
+    $$T_1(x,y) = d^{-1}\sum_{j=1}^d\pi_{X_j\mid X_{-j}}(y_j \mid x_{-j})
+    \delta_{X_{-j}}(y_{-j}),$$
+    then, we have
+    \begin{equation*}
+        \begin{split}
+            \pi(x)T_1(x,y) &= d^{-1}\sum_{j=1}^d \pi(x)\pi(y_j\mid x_{-j})\delta_{X_{-j}}(y_{-j}) \\
+            &=  d^{-1}\sum_{j=1}^d \pi(x_{j}\mid x_{-j})\pi(x_{-j})\pi(y_j\mid x_{-j})\delta_{X_{-j}}(y_{-j}) \\
+            &=  d^{-1}\sum_{j=1}^d \pi(x_{j}\mid y_{-j})\pi(y_j, x_{-j})\delta_{X_{-j}}(y_{-j}) = \pi(y)T_1(y,x),\\
+        \end{split}
+    \end{equation*}
+    which proves that $\pi$ is invariant for $T_1$ and the chain is reversible
+    with respect to $\pi$. Now we shall derive $T_2$. We will have the sum
+    over the index to space with probability $d^{-1}$ for every point.
+    Moreover, is $y \neq x$, the transition from $x$ to $y$ is following $q$
+    distribution and the probability of acceptance $\alpha$. Therefore, 
+    \begin{equation*}
+        \begin{split}
+            T_2(x,y) &= d^{-1}\sum_{j=1}^d q(y_j\mid x_{-j}, x_j)\alpha(x, y_j)\delta_{X_{-j}}(y_{-j}) \\
+            &= d^{-1}\sum_{j=1}^d \frac{\pi_{X_j\mid X_{-j}}(y_j \mid x_{-j})}{1-\pi(x_j \mid x_{-j})}     
+            \min\left\{1, \frac{1-\pi(x_j\mid x_{-j})}{1-\pi(y_j\mid x_{-j})}\right\}\delta_{X_{-j}}(y_{-j}) \\
+            &= d^{-1}\sum_{j=1}^d \pi(y_j \mid x_{-j})     
+            \min\left\{\frac{1}{1-\pi(x_j \mid x_{-j})}, \frac{1}{1-\pi(y_j\mid x_{-j})}\right\}\delta_{X_{-j}}(y_{-j})
+        \end{split}
+    \end{equation*}
+    \begin{equation*}
+        \begin{split}
+            \pi(x)T_2(x,y) &= d^{-1}\sum_{j=1}^d \pi(x)\pi(y_j \mid x_{-j})  \\
+            &\hspace{2cm}\times\min\left\{\frac{1}{1-\pi(x_j \mid x_{-j})}, \frac{1}{1-\pi(y_j\mid x_{-j})}\right\}\delta_{X_{-j}}(y_{-j}) \\
+            &= d^{-1}\sum_{j=1}^d \pi(x_j\mid y_{-j})\pi(y)  \\
+            &\hspace{2cm}\times\min\left\{\frac{1}{1-\pi(x_j \mid x_{-j})}, \frac{1}{1-\pi(y_j\mid x_{-j})}\right\}\delta_{X_{-j}}(y_{-j}) \\
+            &= \pi(y)T_2(y,x),
+        \end{split}
+    \end{equation*}
+    which proves the detailed balance relation. Moreover, notice that, since
+    $1 > 1 - \pi(x_j \mid x_{-j}) > 0$, we have that $T_2(x,y) \ge T_1(x,y)$
+    for every $x \neq y$. We conclude that the Modified random scan Gibbs
+    sampler has lower asymptotic variance. 
+\end{enumerate}
+
+\begin{exercise}
+\end{exercise}
+
+\begin{exercise}
+    (Thinning of a Markov chain)
+\end{exercise}
+
+\begin{enumerate}
+    \item {\it Prove the Cauchy-Schwarz inequality which states that for any two
+    real-valued random variables $Y$ and $Z$,}
+    $$|\ev[YZ]|^2 \le \ev[Y^2]\ev[Z^2]$$
+
+    Notice that for any $\alpha \in \R$, $(Y-\alpha Z)^2 \ge 0$ implying that 
+    $\ev[(Y - \alpha Z)^2] \ge 0$, that is, 
+    $$
+    \ev[Y^2] - 2\alpha \ev[YZ] + \alpha^2\ev[Z^2] \ge 0, 
+    $$
+    which is a quadratic in $\alpha$. By this relation, the quadratic can at
+    most reach 0 is one point, that is, there exists at most one solution when
+    this is zero. Because of that, the discriminant is non-positive, 
+    $$
+    4\ev[YZ]^2 \le 4\ev[Y^2]\ev[Z^2] \implies\ev[YZ]^2 \le \ev[Y^2]\ev[Z^2].
+    $$
+
+    \item {\it Using Cauchy-Schwarz inequality, show that when the marginal
+    distributions of $Y$ and $Z$ are identical
+    then}
+    $$\operatorname{Cov}(Y,Z) \le \var(Y)$$
+
+    Notice that 
+    $$
+    \ev[YZ] - \ev[Y]\ev[Z] = \ev[YZ] - \ev[Y]^2 \le \sqrt{\ev[Y^2]\ev[Z^2]} - \ev[Y]^2 = \ev[Y^2] - \ev[Y]^2, 
+    $$
+    which implies that $\operatorname{Cov}(Y,Z) \le \var(Y)$.
+
+    \item {\it Thinning of a Markov chain $\{X^{(t)}\}_{t \ge 0}$ 
+    is the technique of retaining a subsequence of the sampled
+process for purposes of computing ergodic averages. For some $m \in \N$ we retain the “subsampled”
+chain $\{Y^{(t)}\}_{t \ge 0}$ defined by}
+    $$
+    Y^{(t)} = X^{(mt)}.
+    $$
+    {\it We might hope that $\{Y^{(t)}\}_{t \ge 0}$ will exhibit lower
+    autocorrelation than the original chain $\{X^{(t)}\}_{t \ge 0}$ and thus
+    will yield ergodic averages of lower variance.}
+    
+    {\it Consider a stationary Markov chain $\{X^{(t)}\}_{t \ge 0}$. Let $T$ and $m$ be any two integers such that $T \ge m > 1$
+    and $T /m \in \N$. Show that}
+    $$
+    \var\left[\frac{1}{T}\sum_{t=0}^{T-1}X^{(t)}\right] \le \var\left[\frac{1}{T/m}\sum_{t=0}^{T/m-1} Y^{(t)}\right]
+    $$
+    {\it and briefly explain what this result tells us about the use of
+    thinning.}
+    
+    Following the tip, notice that 
+    $$
+    \sum_{t=0}^{T-1} X^{(t)} = \sum_{t=0}^{m-1} \sum_{s=0}^{T/m-1} X^{(sm + t)}.
+    $$
+    Then,
+    \begin{equation*}
+        \begin{split}
+            \var\left[\sum_{t=0}^{T-1} X^{(t)}\right] &= \var\left[\sum_{t=0}^{m-1} \sum_{s=0}^{T/m-1} X^{(sm + t)}\right] \\
+            &= \sum_{t =0}^{m-1} \var\left[\sum_{s=0}^{T/m-1} X^{(sm + t)}\right] \\
+            &+\quad \sum_{t=0}^{m-1}\sum_{r\neq t} \operatorname{Cov}\left[\sum_{s=0}^{T/m-1} X^{(sm + t)}, \sum_{s=0}^{T/m-1} X^{(sm + r)}\right] \\
+            &\le m\var\left[\sum_{s=0}^{T/m-1} X^{sm}\right] + (m-1)\sum_{t=0}^{m-1} \var\left[\sum_{s=0}^{T/m-1} X^{(sm + t)}\right] \\
+            &\le m\var\left[\sum_{s=0}^{T/m-1} X^{sm}\right] + m(m-1)\var\left[\sum_{s=0}^{T/m-1} X^{sm}\right] \\ 
+            &= m^2\var\left[\sum_{s=0}^{T/m-1} X^{sm}\right] =  \var\left[m\sum_{t=0}^{T/m-1} Y^{(t)}\right]. \\
+        \end{split}
+    \end{equation*}
+    Dividing each side of the inequality per $1/T^2$ yields the result. 
+\end{enumerate}
+
+\begin{exercise}
+    (Simulation question - Paper sheet 4 (Reversible jump MCMC))
+    Consider two models. For model 1 the toy target distribution is given 
+    $$
+    \pi(\theta \mid k = 1) = \exp(-\theta^2/2)
+    $$
+    whereas for model 2 it is given By
+    $$
+    \pi(\theta \mid k = 2) = \exp(-\theta_1^2/2 - \theta_2^2/2)
+    $$
+
+We want to design a transdimensional sampler to sample from the distribution
+of $(k, \theta)$.
+
+\begin{itemize}
+    \item Implement standard Metropolis-Hastings kernels K1 for model 1 and K2 for model 2. Check that they
+    work before going further.
+    \item Implement trans-dimensional moves to go from model 1 to model 2. That is, for $\theta \in \R$, propose
+    an auxiliary variable $u \in \R$ following the distribution of your choice and a deterministic mapping
+    $G_{1\to 2}(\theta, u)$ to obtain a point in $\R^2$ which you will then accept or reject with the appropriate acceptance
+    probability.
+    \item Implement trans-dimensional moves to go from model 2 to model 1.
+    That is, for $\theta \in \R^2$, propose a deterministic mapping $G_{2\to
+    1}(\theta)$ to obtain a point in $\R$ which you will then accept or
+    reject with the appropriate acceptance probability.
+    \item Put these kernels together to obtain a valid Reversible Jump algorithm. What is the proportion of
+    visits to each model? What should it be in the limit of the number of
+    iterations?
+\end{itemize}
+
+\end{exercise}
+
+% \bibliographystyle{apalike}
+% \bibliography{../stat_comp}
+
+\end{document}          
