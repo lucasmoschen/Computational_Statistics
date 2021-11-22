@@ -335,14 +335,32 @@ $$
 \hat{I}_3 = \frac{1}{m} \sum_{i=1}^m ||q^{(i)} - p^{(i)}||. 
 $$
 This is an unbiased estimator, consistent with asymptotic distribution 
-similar to $\hat{I}_1$. The disadvantage of $\hat{I}_3$ is the wasted samples,
+with similar proves to $\hat{I}_1$ by the calculations we made in the warmup
+assignment (proving the both forms of integral were equivalent). The disadvantage of $\hat{I}_3$ is the wasted samples,
 but it introduces a class of estimators that depend on the number of the sides
 of a polygon. 
 
 \section*{Diagnosis}
 
 The samples obtained through Rejection Sampling are independent, which assures
-theoretical results. 
+theoretical results in a simple manner. 
+To track the number of rejected samples, we iteratively
+calculate $\widehat{M}_n$ for each $m$. We expect that 
+$$\widehat{M}_n \overset{m \to \infty}{\to} M_n.$$
+This generates a graphic of $\widehat{M}_n$ for different number oof samples
+$m$.
+
+For the Monte Carlo convergence, we follow a suggestion given by \cite[p.
+124]{robert2004monte} to run parallel estimates and calculate the 90\% empirical
+band. We can also compare to the normal approximation  by the Central Limit
+Theorem. If no asymptotic property is desired, we can also use Chebyshev
+inequality:
+$$
+\Pr(|\hat{I}_1 - I| \ge \alpha \sigma) \le \alpha^{-2},  
+$$
+where $\sigma$ is the standard deviation of this estimator. In this case we 
+know it in closed form. If no closed form were known, the approximation would
+be in levels of the standard deviation, which is a general good strategy.
 
 \section*{Experiments}
 
