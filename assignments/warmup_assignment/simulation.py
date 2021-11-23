@@ -3,8 +3,6 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
 from time import time
-from numpy.core.fromnumeric import mean
-from numpy.lib.index_tricks import nd_grid
 from scipy.stats import norm, t
 
 def simple_simulation(R, n_samples): 
@@ -59,13 +57,13 @@ if __name__ == '__main__':
 
     ax[0].plot(range(1,n_samples), mean_cum, color = 'black', label = 'Point estimate')
     ax[0].fill_between(x = range(1,n_samples), 
-                       y1 = mean_cum - z, y2 = mean_cum + z, 
-                       alpha = 0.3, color = 'blue', 
+                       y1 = mean_cum - z, y2 = mean_cum + z,
+                       alpha = 0.3, color = 'blue',
                        label = '95-confidence interval (known V)')
     ax[0].fill_between(x = range(1,n_samples), 
-                       y1 = mean_cum - sigma_prime, 
-                       y2 = mean_cum + sigma_prime, 
-                       alpha = 0.3, color = 'green', 
+                       y1 = mean_cum - sigma_prime,
+                       y2 = mean_cum + sigma_prime,
+                       alpha = 0.3, color = 'green',
                        label = '95-confidence interval')
     ax[0].axhline(128*R/(45 * np.pi), linestyle = '--', color = 'red', 
                   alpha = 0.5, label = 'True value')

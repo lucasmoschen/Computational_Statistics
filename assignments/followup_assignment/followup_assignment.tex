@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{multirow}
 
 \newcommand{\ev}{\mathbb{E}}
 \newcommand{\var}{\operatorname{Var}}
@@ -364,7 +365,99 @@ be in levels of the standard deviation, which is a general good strategy.
 
 \section*{Experiments}
 
-Evaluate variance, bias, MCSE, and $\hat{R}$. 
+We draw 2000 samples for each of the runs and calculate variance, bias, MCSE,
+and $\hat{R}$. I notice that by theoretical results, we expect to see the
+variance being a value near to $1.31 R^2$ for each $R$. Table
+\ref{tab:table-ihat2} summarizes the results for $\hat{I}_2$. I notice that
+the results are very similar to $\hat{I}_1$ since the one is a simple
+transformation of the other. 
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{ccccc}
+    \hline
+    \multirow{2}{*}{R} & \multicolumn{4}{c}{$\hat{I}_2$} \\ \cline{2-5} 
+     & Variance & Bias & MCSE & R hat \\ \hline
+    0.01 & $1.31\cdot 10^{-4}$ & $-5.55\cdot 10^{-6}$ & $2.63\cdot 10^{-4}$ & 1.0 \\
+    0.1 & $1.32\cdot 10^{-2}$ & $-4.32\cdot 10^{-5}$ & $2.56\cdot 10^{-3}$ & 1.0 \\
+    1 & $1.31\cdot 10^{0}$ & $-2.77 \cdot 10^{-3}$ & $2.61\cdot 10^{-2}$ &
+    1.0 \\
+    10 & $1.31\cdot 10^{2}$ & $-1.55 \cdot 10^{-2}$ & $2.61\cdot 10^{-1}$ & 1.0 \\
+    100 & $1.32\cdot 10^{4}$ & $-3.09 \cdot 10^{-2}$ & $2.59\cdot 10^{0}$ & 1.0 \\
+    1000 & $1.32\cdot 10^{6}$ & $2.09 \cdot 10^{0}$ & $2.47\cdot 10^{1}$ &
+    1.0 \\
+    10000 & $1.31\cdot 10^{8}$ & $4.88 \cdot 10^{0}$ & $2.66\cdot 10^{2}$ &
+    1.0 \\ \hline
+    \end{tabular}
+    \caption{\label{tab:table-ihat2} Results of $\widehat{I}_2$ for the experiments.}
+\end{table}
+
+I emphasize that the mean estimated of $\hat{I}_3$ for any $n$ are essentially
+the same, since the Monte Carlo estimator draws the samples from the same
+distribution: uniform on the circle. The only difference between them is the
+probability of acceptance, related to the number of rejected samples, and the
+time of execution, also related to the rejected samples. For that reason, we
+only show a unique estimate for $\hat{I}_3$ in Table \ref{tab:table-ihat3}.
+Bias and variance are generally less for this estimator in comparison to
+$\hat{I}_2$, which is pretty interesting. Table \ref{tab:time-samples} shows
+how the sampling are more efficient for $\hat{I}_1$ and $\hat{I}_2$ than the
+estimator using rejection sampling. Figure \ref{fig:ratio_number_samples}
+shows that the ration between the number of samples and the accepted ones
+converge to one as predicted. Figures \ref{fig:convergence_chains} and
+\ref{fig:histogram_mean_estimates} shows the properties of consistency and
+asymptotic normality of the estimate $\hat{I}_3$.
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{ccccc}
+    \hline
+    \multirow{2}{*}{R} & \multicolumn{4}{c}{$\hat{I}_3$} \\ \cline{2-5} 
+     & Variance & Bias & MCSE & R hat \\ \hline
+    0.01 & $1.8\cdot 10^{-5}$ & $2.56\cdot 10^{-6}$ & $9.18\cdot 10^{-5}$ & 1.0\\
+    0.1 & $1.8\cdot 10^{-3}$ & $1.21\cdot 10^{-5}$ & $9.66\cdot 10^{-4}$ &  1.0\\
+    1 & $1.8\cdot 10^{-1}$ & $-7.3\cdot 10^{-5}$ & $9.79\cdot 10^{-3}$ &  1.0\\
+    10 & $1.8\cdot 10^{1}$ & $-2.67 \cdot 10^{-3}$ & $9.3\cdot 10^{-2}$ &  1.0\\
+    100 & $1.8\cdot 10^{3}$ & $4.27 \cdot 10^{-2}$ & $9.66\cdot 10^{-1}$ &  1.0 \\
+    1000 & $1.8\cdot 10^{5}$ & $-4.95 \cdot 10^{1}$ & $9.25\cdot 10^{0}$ &  1.0\\
+    10000 & $1.8\cdot 10^{7}$ & $-3.7 \cdot 10^{0}$ & $9.27\cdot 10^{1}$ &  1.0\\ \hline
+    \end{tabular}
+    \caption{\label{tab:table-ihat3} Results of $\widehat{I}_3$ for the
+    experiments.}
+\end{table}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{cccccccccc}
+    \hline
+    \textbf{} & \textbf{$\hat{I}_1$} & \textbf{$\hat{I}_2$} & \textbf{$\hat{I}_3^{(4)}$} & \textbf{$\hat{I}_3^{(5)}$} & \textbf{$\hat{I}_3^{(6)}$} & \textbf{$\hat{I}_3^{(8)}$} & \textbf{$\hat{I}_3^{(10)}$} & \textbf{$\hat{I}_3^{(12)}$} & \textbf{$\hat{I}_3^{(20)}$} \\ \hline
+    \textbf{N ($10^6$)} & $2$ & $2$ & $2.55$ & $2.32$ & $2.2$ & $2.11$ & $2.07$ & $2.04$ & $2.02$ \\
+    \textbf{T (s)} & 0.012 & 0.010 & 2.16 & 1.99 & 1.83 & 1.78 & 1.72 & 1.72 & 1.68 \\ \hline
+    \end{tabular}
+    \caption{\label{tab:time-samples}Comparison between the number of samples $N$
+    (accounting for the rejected whenever necessary) and the required time $T$
+    to have 200000 accepted samples.}
+\end{table}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=8cm]{images/ratio_number_samples.pdf}
+    \caption{\label{fig:ratio_number_samples}The red line marks the
+    convergence value.}
+\end{figure}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=8cm]{images/convergence_chains.png}
+    \caption{\label{fig:convergence_chains}The red line marks the
+    convergence value.}
+\end{figure}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=8cm]{images/histogram_mean_estimates.png}
+    \caption{\label{fig:histogram_mean_estimates}With $R = 1$, 2000
+    iterations and the histogram of $\hat{I}_3$ for $n=10$.}
+\end{figure}
 
 \bibliographystyle{apalike}
 \bibliography{../stat_comp}

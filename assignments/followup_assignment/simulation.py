@@ -11,6 +11,7 @@ from tqdm import tqdm
 PI = np.pi
 FOLDER = '/home/lucasmoschen/Documents/GitHub/computational-statistics/assignments/followup_assignment/images/'
 import json
+from scipy.stats import norm, t
 
 def calculate_triangle_points(radius, n):
     """
@@ -69,7 +70,7 @@ def I2_hat(m, R):
     r1, r2, theta1, theta2 = np.random.random(size=(4, m))
     estimates = r1**2 + r2**2 - 2*r1*r2*np.cos(2*PI*(theta2 - theta1))
     estimates = np.sqrt(estimates) * r1 * r2
-    mean_estimate = np.sum(estimates) * 4 * R / m 
+    mean_estimate = np.sum(estimates) * 4 * R / m
     var_estimate = np.sum((4 * R * estimates - mean_estimate)**2)/(m-1)
     return mean_estimate, var_estimate, estimates
 
@@ -83,26 +84,18 @@ def I3_hat(n, m, R, x, y):
 
 if __name__ == '__main__':
 
-    M = 500
+    R = 1
     m = 2000
-    data = {}
-    for R in tqdm([0.01, 0.1, 1, 10, 100, 1000, 10000]):
-        points = {}
-        for k in [4, 8, 20]:
-            _, _, x, y = calculate_triangle_points(radius=R, n=k)
-            points[k] = [x, y]
-        for i in range(M):
-            mean1, variance1, est1 = I1_hat(m=m, R=R)
-            mean2, variance2, est2 = I2_hat(m=m, R=R)
-            data[R] = {}
-            data[R]['I1'] = [mean1, variance1, list(est1)]
-            data[R]['I2'] = [mean2, variance2, list(est2)]
-            for k in [4, 8, 20]:
-                mean, variance, n1, n2, est3 = I3_hat(n=k, m=m, R=R, x=points[k][0], y=points[k][1])
-                data[R]['IR_{}'.format(k)] = [mean, variance, n1, n2, list(est3)]
-    with open(FOLDER + 'file.json', 'w') as f:
-        json.dump(data, f)
-            
+    _, _, x, y = calculate_triangle_points(radius=R, n=10)
+    mean_estimates = []
+    for k in tqdm(range(1000)):
+        mean, _, _, _, est = I3_hat(n=10, m=m, R=R, x=x, y=y)
+        mean_estimates.append(mean)
+    
+    plt.hist(mean_estimates, bins=25)
+    plt.title('Histogram of mean estimates from 500 chains')
+    plt.show()
+       
     if input('Do you want to show the figure? [y/n]') == 'y':
         # Figure 1
         n = 6
@@ -252,5 +245,49 @@ if __name__ == '__main__':
         plt.title('M constants for different values of n')
         plt.savefig(FOLDER+'figure7.pdf', bbox_inches='tight')
         plt.show()
+
+        # Iterações
+        M = 500
+        m = 2000
+        data = {}
+        for R in tqdm([0.01, 0.1, 1, 10, 100, 1000, 10000]):
+            points = {}
+            for k in [10]:
+                _, _, x, y = calculate_triangle_points(radius=R, n=k)
+                points[k] = [x, y]
+            data[R] = {}
+            data[R]['I1'] = [[], []]
+            data[R]['I2'] = [[], []]
+            data[R]['I3'] = [[], []]
+            R_hat_matrix = np.zeros((m, M, 3))
+            for i in range(M):
+                mean1, variance1, est1 = I1_hat(m=m, R=R)
+                mean2, variance2, est2 = I2_hat(m=m, R=R)
+                for k in [10]:
+                    mean3, variance3, n1, n2, est3 = I3_hat(n=k, m=m, R=R, x=points[k][0], y=points[k][1])
+                data[R]['I1'][0].append(mean1)
+                data[R]['I2'][0].append(mean2)
+                data[R]['I3'][0].append(mean3)
+                data[R]['I1'][1].append(variance1)
+                data[R]['I2'][1].append(variance2)
+                data[R]['I3'][1].append(variance3)
+                R_hat_matrix[:, i, 0] = np.array(est1) * 4 / R**2
+                R_hat_matrix[:, i, 1] = np.array(est2) * 4 * R
+                R_hat_matrix[:, i, 2] = np.array(est3)
+            W = np.mean(R_hat_matrix[:, :, 0].var(axis=0, ddof=1))
+            B = np.var(R_hat_matrix[:, :, 0].mean(axis=0), ddof=1)
+            V = (1 - 1/m) * W + B
+            data[R]['I1'].append(np.sqrt(V/W))
+            W = np.mean(R_hat_matrix[:, :, 1].var(axis=0, ddof=1))
+            B = np.var(R_hat_matrix[:, :, 1].mean(axis=0), ddof=1)
+            V = (1 - 1/m) * W + B
+            data[R]['I2'].append(np.sqrt(V/W))
+            W = np.mean(R_hat_matrix[:, :, 2].var(axis=0, ddof=1))
+            B = np.var(R_hat_matrix[:, :, 2].mean(axis=0), ddof=1)
+            V = (1 - 1/m) * W + B
+            data[R]['I3'].append(np.sqrt(V/W))
+
+        with open(FOLDER + 'file.json', 'w') as f:
+            json.dump(data, f)
 
     
